@@ -110,7 +110,7 @@ public class driver {
     }
 
 
-    @Test(priority=1)
+    @Test
     public void giveAGift() {
 
         try {
