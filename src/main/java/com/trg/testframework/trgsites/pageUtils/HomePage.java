@@ -33,7 +33,7 @@ public class HomePage {
     }
 
 
-    public Boolean navigatesToHomePage() {
+    public Boolean verifyHomePageLoaded() {
         Boolean homePageLoaded = false;
         try {
             WebElement Herotexts = driver.findElement(By.cssSelector(LandingObjValues.getElement("mainPageHeroText")));

@@ -3,11 +3,14 @@ package com.trg.testframework.trgsites.pageUtils;
 
 import com.trg.testframework.steps.Logger;
 import com.trg.testframework.trgsites.propertyObjects.GiveGiftObjValues;
+import com.trg.testframework.trgsites.propertyObjects.LandingObjValues;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.Random;
 
 /**
  * Created by Calcey on 1/25/2016.
@@ -17,9 +20,11 @@ public class CommonOperations {
 
 
     WebDriver driver=null;
+    HomePage homePage=null;
 
-    public CommonOperations(WebDriver driver){
+    public CommonOperations(WebDriver driver,HomePage homePage){
         this.driver=driver;
+        this.homePage=homePage;
     }
 
     public boolean waitForAnElementDisplayed(WebDriver d,int sleeptime, By condition) {
@@ -114,6 +119,33 @@ public class CommonOperations {
     public WebElement getSectionHeader(){
         WebElement sectionHeader=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("sectionHeader")));
         return  sectionHeader;
+    }
+
+    public Boolean goToHomePage(){
+        Boolean landedHomePage=false;
+        try {
+            waitForAnElementClickable(driver, 10, By.cssSelector(LandingObjValues.getElement("logoImage")));
+            WebElement homeButton=driver.findElement(By.cssSelector(LandingObjValues.getElement("logoImage")));
+            homeButton.click();
+            if(homePage.verifyHomePageLoaded()){
+                landedHomePage=true;
+            }
+        }catch (Exception e){
+            Logger.log("failed to land home page");
+            e.printStackTrace();
+        }
+        return  landedHomePage;
+    }
+    public int randomInt(int min, int max) {
+        if(min > max) {
+            int rand = min;
+            min = max;
+            max = rand;
+        }
+
+        Random rand1 = new Random();
+        int randomNumber = rand1.nextInt(max - min + 1) + min;
+        return randomNumber;
     }
 
 }

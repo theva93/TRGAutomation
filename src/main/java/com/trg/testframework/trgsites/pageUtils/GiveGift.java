@@ -128,14 +128,15 @@ public class GiveGift {
 
     public Boolean checkForOccationsAndClick() throws Exception {
         Boolean selectedOneOccation = false;
-        int index = 1;
+        int randomChoiceOccasion;
         try {
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("selectOccations")));
             List<WebElement> selectOccations = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("selectOccations")));
             if (selectOccations.size() == 6) {
                 Logger.log("All Occations are available to select");
             }
-            WebElement selectOneOccation = selectOccations.get(index).findElement(By.tagName("a"));
+            randomChoiceOccasion=commonOperations.randomInt(1,(selectOccations.size()-1));
+            WebElement selectOneOccation = selectOccations.get(randomChoiceOccasion).findElement(By.tagName("a"));
             selectOneOccation.click();
             selectedOneOccation = true;
             Logger.log("selected one occation");

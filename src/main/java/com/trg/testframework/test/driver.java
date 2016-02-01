@@ -13,6 +13,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.Properties;
@@ -98,7 +99,7 @@ public class driver {
         driver.manage().deleteAllCookies();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        commonOperations = new CommonOperations(driver);
+        commonOperations = new CommonOperations(driver,homePage);
         homePage.recieveDriver(driver, commonOperations);
         giveGift.receiveDriver(driver, commonOperations);
         redeemGift.recieveDriver(driver, commonOperations);
@@ -114,7 +115,7 @@ public class driver {
     public void giveAGift() {
 
         try {
-            Assert.assertTrue(homePage.navigatesToHomePage());
+            Assert.assertTrue(homePage.verifyHomePageLoaded());
             Assert.assertTrue(homePage.verifyPageLogo());
             Assert.assertTrue(giveGift.verifyPathsToGiveAGiftPage());
             Assert.assertTrue(giveGift.goToGiveAGiftPage());
@@ -135,17 +136,18 @@ public class driver {
     }
 
 
-    @Test
+    @After
     public void redeemAGift() {
         try {
-            Assert.assertTrue(homePage.navigatesToHomePage());
+            Assert.assertTrue(commonOperations.goToHomePage());
+            Assert.assertTrue(homePage.verifyHomePageLoaded());
             Assert.assertTrue(homePage.verifyPageLogo());
             Assert.assertTrue(homePage.clickOnRedeemAGift());
             Assert.assertTrue(redeemGift.validGiftCodeAndEnter(RedeemCode));
             //Assert.assertTrue(redeemGift.verifyRedeemAnotherCodeWithInvalidCode("2AVJ-QG3V-M2F1"));
             //Assert.assertTrue(redeemGift.invalidGiftCodeEnter("2AVJ-QG3V-M2F1"));
-            Assert.assertTrue(redeemGift.insertEmail("udara@calcey.com"));
-            Assert.assertTrue(redeemGift.insertAccountNo());
+            //Assert.assertTrue(redeemGift.insertEmail("udara@calcey.com"));
+            //Assert.assertTrue(redeemGift.insertAccountNo());
             //2AVJ-QG3V-M2F1/AEBL-W4YM-BKM6/15XW-1KE8-CE58
 
         } catch (Exception e) {
@@ -154,10 +156,10 @@ public class driver {
     }
 
 
-        @After
-        public void tearDown () {
-            // driver.quit();
-        }
+//        @After
+//        public void tearDown () {
+//             driver.quit();
+//        }
 
     }
 
