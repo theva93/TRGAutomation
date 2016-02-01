@@ -1,6 +1,7 @@
 package com.trg.testframework.trgsites.pageUtils;
 
 
+import com.trg.testframework.steps.Logger;
 import com.trg.testframework.trgsites.propertyObjects.GiveGiftObjValues;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -41,6 +42,34 @@ public class CommonOperations {
                 } catch (InterruptedException var8) {
                     Thread.currentThread().interrupt();
                 }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean waitForAnElementDisplayed(String Webelement,WebElement webElement, int tries, int sleepTime) {
+        for (int count = 0; count < tries; ++count) {
+            try {
+
+                if (webElement.isDisplayed()) {
+                    Logger.log(""+Webelement+" displayed ");
+                    return true;
+                }
+                else {
+                    try {
+                        Thread.sleep((long) sleepTime);
+                    } catch (InterruptedException var9) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            } catch (Exception var10) {
+                try {
+                    Thread.sleep((long) sleepTime);
+                } catch (InterruptedException var8) {
+                    Thread.currentThread().interrupt();
+                }
+                Logger.log("Couldn't display the "+Webelement+"");
             }
         }
 

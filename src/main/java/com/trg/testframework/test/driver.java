@@ -3,6 +3,7 @@ package com.trg.testframework.test;
 import com.trg.testframework.trgsites.pageUtils.CommonOperations;
 import com.trg.testframework.trgsites.pageUtils.GiveGift;
 import com.trg.testframework.trgsites.pageUtils.HomePage;
+import com.trg.testframework.trgsites.pageUtils.RedeemGift;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,6 +32,7 @@ public class driver {
     private static boolean paramDebug;
     private HomePage homePage = new HomePage();
     private GiveGift giveGift = new GiveGift();
+    private RedeemGift redeemGift = new RedeemGift();
     private CommonOperations commonOperations = null;
 
     private static String landingProperties = "";
@@ -97,6 +99,7 @@ public class driver {
         commonOperations = new CommonOperations(driver);
         homePage.recieveDriver(driver, commonOperations);
         giveGift.receiveDriver(driver, commonOperations);
+        redeemGift.recieveDriver(driver, commonOperations);
 
     }
 
@@ -105,7 +108,6 @@ public class driver {
     }
 
 
-    @Test
     public void giveAGift() {
 
         try {
@@ -129,8 +131,41 @@ public class driver {
     }
 
 
-    @After
-    public void tearDown() {
-        // driver.quit();
+    @Test
+    public void redeemAGift() {
+        try {
+
+
+            Assert.assertTrue(homePage.navigatesToHomePage());
+
+            Assert.assertTrue(homePage.verifyPageLogo());
+
+            Assert.assertTrue(homePage.clickOnRedeemAGift());
+
+            Assert.assertTrue(redeemGift.validGiftCodeAndEnter("15XW-1KE8-CE58"));
+
+            //Assert.assertTrue(redeemGift.verifyRedeemAnotherCodeWithInvalidCode("2AVJ-QG3V-M2F1"));
+
+            //Assert.assertTrue(redeemGift.invalidGiftCodeEnter("2AVJ-QG3V-M2F1"));
+
+            Assert.assertTrue(redeemGift.insertEmail("udara@calcey.com"));
+
+            Assert.assertTrue(redeemGift.insertAccountNo());
+
+            //2AVJ-QG3V-M2F1/AEBL-W4YM-BKM6/15XW-1KE8-CE58
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
     }
-}
+
+
+        @After
+        public void tearDown () {
+            // driver.quit();
+        }
+    }
+
