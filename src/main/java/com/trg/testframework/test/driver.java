@@ -1,5 +1,6 @@
 package com.trg.testframework.test;
 
+import com.trg.testframework.steps.Logger;
 import com.trg.testframework.trgsites.pageUtils.CommonOperations;
 import com.trg.testframework.trgsites.pageUtils.GiveGift;
 import com.trg.testframework.trgsites.pageUtils.HomePage;
@@ -32,6 +33,7 @@ public class driver {
     private HomePage homePage = new HomePage();
     private GiveGift giveGift = new GiveGift();
     private CommonOperations commonOperations = null;
+    private String RedeemCode ="";
 
     private static String landingProperties = "";
 
@@ -104,7 +106,6 @@ public class driver {
 
     }
 
-
     @Test
     public void giveAGift() {
 
@@ -121,16 +122,16 @@ public class driver {
             Assert.assertTrue(giveGift.reviewYourOrder());
             Assert.assertTrue(giveGift.continueAsAGuest());
             Assert.assertTrue(giveGift.checkOutDetails());
-
+            RedeemCode = giveGift.getRedeemCode();
+            Logger.log("Coupon ID :"+ RedeemCode);
         } catch (Exception e) {
             e.printStackTrace();
             fail("couldnt finish the gifting procedure");
         }
     }
 
-
     @After
-    public void tearDown() {
-        // driver.quit();
+        public void tearDown() {
+         driver.quit();
     }
 }

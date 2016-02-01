@@ -69,6 +69,7 @@ public class GiveGift {
             WebElement GetStartedNow = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("GetStartedNow")));
             GetStartedNow.click();
 
+            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
             WebElement giveGiftPage = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
             if (giveGiftPage.isDisplayed() && giveGiftPage.getText().toLowerCase().contains("give a gift")) {
                 giveGiftPageLoaded = true;
@@ -212,41 +213,55 @@ public class GiveGift {
             WebElement messageForGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("message")));
             messageForGiftDetail.sendKeys(GiftDetailMessage);
             enteredGiftDetails = true;
-            continueToNextStep();
+//            continueToNextStep();
 
         } catch (Exception e) {
             Logger.log("Unable to fill Gift details");
             e.printStackTrace();
         }
 
-//        try {
-//            int randomMonthIndex = 2;
-//            int randomDateIndex = 10;
-//            WebElement calendarButtonGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarButtonGiftDetail")));
-//            calendarButtonGiftDetail.click();
-//            WebElement calendarMonthPanel = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarMonthPanel")));
-//            if (!calendarMonthPanel.isDisplayed()) {
-//                Logger.log("calendar month menu is not visible");
-//            }
-//            List<WebElement> calendarMonthsAvailabletoClick = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("calendarButtonGiftDetail")));
-//            if (calendarMonthsAvailabletoClick.size() != 12) {
-//                Logger.log("calendar months are not available to click");
-//            }
-//            calendarMonthsAvailabletoClick.get(randomMonthIndex).click();
-//            WebElement calendarDatePanel = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarDatePanel")));
-//            if (!calendarDatePanel.isDisplayed()) {
-//                Logger.log("Calendar date menu is not visible");
-//            }
-//            List<WebElement> calendarDatesAvailableToClick = driver.findElements(By.xpath("//div[@class='moment-picker-specific-views']/table/tbody/tr/td)"));
-//            if (calendarDatesAvailableToClick.size() != 42) {
-//                Logger.log("Calendar dates are not availale to click");
-//            }
-//            calendarDatesAvailableToClick.get(randomDateIndex).click();
-//
-//        } catch (Exception e) {
-//            Logger.log("unable to select a Delivery Date");
-//            e.printStackTrace();
-//        }
+        try {
+            int randomMonthIndex =2;
+            int randomDateIndex = 10;
+            int randomHourDetailInedx=3;
+            int randomMinuteIndex=5;
+
+            WebElement calendarButtonGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarButtonGiftDetail")));
+            calendarButtonGiftDetail.click();
+            WebElement calendarMonthPanel = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarMonthPanel")));
+            if (!calendarMonthPanel.isDisplayed()) {
+                Logger.log("calendar month menu is not visible");
+            }
+            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(GiveGiftObjValues.getElement("CalendarMonthsAvailabletoClick")));
+            List<WebElement> calendarMonthsAvailabletoClick = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("CalendarMonthsAvailabletoClick")));
+            if (calendarMonthsAvailabletoClick.size() != 12) {
+                Logger.log("calendar months are not available to click");
+            }
+            calendarMonthsAvailabletoClick.get(randomMonthIndex).click();
+            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(GiveGiftObjValues.getElement("calendarDatePanel")));
+            WebElement calendarDatePanel = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarDatePanel")));
+            if (!calendarDatePanel.isDisplayed()) {
+                Logger.log("Calendar date menu is not visible");
+            }
+            List<WebElement> calendarDatesAvailableToClick = driver.findElements(By.xpath("//div[@class='moment-picker-specific-views']/table/tbody/tr/td"));
+            if (calendarDatesAvailableToClick.size() != 42) {
+                Logger.log("Calendar dates are not availale to click");
+            }
+            calendarDatesAvailableToClick.get(randomDateIndex).click();
+            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("setHourDateDetail")));
+            List<WebElement> setHourDateDetail=driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("setHourDateDetail")));
+            setHourDateDetail.get(randomHourDetailInedx).click();
+
+            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("setMinuteDateDetail")));
+            List<WebElement> setMinuteDateDetail=driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("setMinuteDateDetail")));
+            setMinuteDateDetail.get(randomMinuteIndex).click();
+
+            continueToNextStep();
+
+        } catch (Exception e) {
+            Logger.log("unable to select a Delivery Date");
+            e.printStackTrace();
+        }
 
         return enteredGiftDetails;
     }
@@ -334,10 +349,23 @@ public class GiveGift {
             continueToNextStep = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("continueToNextStep")));
             continueToNextStep.click();
         } catch (Exception e) {
+            Logger.log("unable to continue to next step");
             e.printStackTrace();
         }
     }
 
+    public String getRedeemCode(){
+        String giftRedeemCode ="";
+        try{
+            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("redeemCode")));
+            WebElement redeemCode=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("redeemCode")));
+            giftRedeemCode=redeemCode.getText();
+        }catch (Exception e){
+            Logger.log("cannot get the RedeemCode");
+            e.printStackTrace();
+        }
+        return giftRedeemCode;
+    }
 
 }
 
