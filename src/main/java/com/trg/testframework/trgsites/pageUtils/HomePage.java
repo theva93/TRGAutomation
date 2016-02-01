@@ -50,4 +50,20 @@ public class HomePage {
         }
         return homePageLoaded;
     }
+
+    public Boolean clickOnRedeemAGift(){
+        Boolean clickedOnRedeemAGiftButton=false;
+
+        try{
+
+            WebElement RedeemAGift= driver.findElement(By.cssSelector(LandingObjValues.getElement("redeemAGift")));
+            RedeemAGift.click();
+            clickedOnRedeemAGiftButton=true;
+        }catch (Exception e){
+            throw  e;
+
+        }
+
+        return clickedOnRedeemAGiftButton;
+    }
 }
