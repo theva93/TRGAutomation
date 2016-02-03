@@ -23,8 +23,8 @@ public class HomePage {
     public Boolean verifyPageLogo() throws Exception {
         Boolean pageLogoVerified = false;
         try {
-            WebElement headerElement = driver.findElement(By.cssSelector(LandingObjValues.getElement("mainPageHeader")));
-            pageLogoVerified = headerElement.findElement(By.cssSelector(LandingObjValues.getElement("logoImage"))).isDisplayed();
+            WebElement headerElement = driver.findElement(By.cssSelector(LandingObjValues.getElement("homePageButton")));
+            pageLogoVerified = headerElement.isDisplayed();
         } catch (Exception e) {
             e.printStackTrace();
             Logger.log("failed to verify Page Logo");
@@ -36,6 +36,7 @@ public class HomePage {
     public Boolean verifyHomePageLoaded() {
         Boolean homePageLoaded = false;
         try {
+            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(LandingObjValues.getElement("mainPageHeroText")));
             WebElement Herotexts = driver.findElement(By.cssSelector(LandingObjValues.getElement("mainPageHeroText")));
             if (Herotexts.isDisplayed()) {
                 WebElement heading1 = Herotexts.findElement(By.cssSelector(LandingObjValues.getElement("heroText_1")));

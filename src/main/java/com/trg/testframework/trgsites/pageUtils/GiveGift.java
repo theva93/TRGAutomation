@@ -3,6 +3,8 @@ package com.trg.testframework.trgsites.pageUtils;
 import com.trg.testframework.trgsites.pageUtils.CommonOperations;
 import com.trg.testframework.steps.Logger;
 import com.trg.testframework.trgsites.propertyObjects.GiveGiftObjValues;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,7 +12,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
-
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 /**
  * Created by Calcey on 1/19/2016.
  */
@@ -20,6 +23,11 @@ public class GiveGift {
     WebElement continueToNextStep;
     WebElement homePageHeader;
     CommonOperations commonOperations = null;
+    String wrongEmail1="thevan";
+    String wrongEmail2="thevan@";
+    String wrongEmail3="thevan@calcey";
+    String wrongEmail4="thevan@calcey.";
+    String wrongEmail5="thevan@calcey.comlq";
 
     public void receiveDriver(WebDriver driver, CommonOperations commonOperations) {
         this.driver = driver;
@@ -69,7 +77,7 @@ public class GiveGift {
             WebElement GetStartedNow = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("GetStartedNow")));
             GetStartedNow.click();
 
-            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
+            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
             WebElement giveGiftPage = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
             if (giveGiftPage.isDisplayed() && giveGiftPage.getText().toLowerCase().contains("give a gift")) {
                 giveGiftPageLoaded = true;
@@ -87,6 +95,35 @@ public class GiveGift {
 
         return giveGiftPageLoaded;
     }
+    public Boolean verifyDeliveryMethodsUI(){
+        Boolean verifiedDeliveryMethodsUI = false;
+        try{
+            commonOperations.waitForAnElementPresent(driver, 10, By.xpath(GiveGiftObjValues.getElement("deliveryOptions")));
+            List<WebElement> deliveryOptions=driver.findElements(By.xpath(GiveGiftObjValues.getElement("deliveryOptions")));
+            for(WebElement we:deliveryOptions){
+                if(!we.isDisplayed()){
+                    Logger.log("Delivery options are not visible or clickable");
+                }
+            }
+            WebElement compareDeliveryMethods=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("compareDeliveryMethods")));
+            compareDeliveryMethods.click();
+            commonOperations.waitForAnElementPresent(driver, 5, By.xpath(GiveGiftObjValues.getElement("aboutDeliveryMethodsElements")));
+            List<WebElement> aboutDeliveryMethodsElements=driver.findElements(By.xpath(GiveGiftObjValues.getElement("aboutDeliveryMethodsElements")));
+            for (WebElement we:aboutDeliveryMethodsElements ){
+                if(!we.isDisplayed()){
+                    Logger.log("Missing Compare details for delivery methods");
+                }
+            }
+            WebElement getStartedNowDeliveryMethods=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("getStartedNowDeliveryMethods")));
+            getStartedNowDeliveryMethods.click();
+            verifiedDeliveryMethodsUI=true;
+
+        }catch (Exception e){
+            Logger.log("errors in user interface for selecting the delivery methods");
+            e.printStackTrace();
+        }
+        return verifiedDeliveryMethodsUI;
+    }
 
     public Boolean selectDeliveryMethodEmail() throws Exception {
 
@@ -100,9 +137,7 @@ public class GiveGift {
             WebElement OccasionsHeading = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("OccasionsHeading")));
             if (OccasionsHeading.getText().toLowerCase().contains("choose the occasion")) {
                 selectedDeliveryByEmail = true;
-                Logger.log("selected Delivery method by Email");
             }
-
         } catch (Exception e) {
             Logger.log("cannot select the delivery method by Email");
             e.printStackTrace();
@@ -132,14 +167,14 @@ public class GiveGift {
         try {
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("selectOccations")));
             List<WebElement> selectOccations = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("selectOccations")));
-            if (selectOccations.size() == 6) {
-                Logger.log("All Occations are available to select");
+            if (selectOccations.size()<=0) {
+                Logger.log("Occations are not available to click");
             }
-            randomChoiceOccasion=commonOperations.randomInt(1,(selectOccations.size()-1));
+            randomChoiceOccasion=commonOperations.randomInt(0,(selectOccations.size()-1));
             WebElement selectOneOccation = selectOccations.get(randomChoiceOccasion).findElement(By.tagName("a"));
             selectOneOccation.click();
             selectedOneOccation = true;
-            Logger.log("selected one occation");
+
             continueToNextStep();
         } catch (Exception e) {
             Logger.log("cannot check for the occations and click one");
@@ -152,12 +187,12 @@ public class GiveGift {
     public Boolean pickADesign() throws Exception {
 
         Boolean pickedADesign = false;
-        int randomDesignindex = 2;
+        int randomDesignindex;
 
         try {
             WebElement pickADesignPageHeader = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("pickADesignPageHeader")));
-            if (pickADesignPageHeader.getText().toLowerCase().contains("pick a design")) {
-                System.out.println("pick a design page Loaded");
+            if (!pickADesignPageHeader.getText().toLowerCase().contains("pick a design")) {
+                Logger.log("failed to load pick a design page ");
             }
             WebElement useOurDesignsTab = driver.findElement(By.xpath(GiveGiftObjValues.getElement("useOurDesignsTab")));
             useOurDesignsTab.click();
@@ -168,6 +203,7 @@ public class GiveGift {
             if (designsToPick.size() > 0) {
                 Logger.log("Thumbnails to select designs are available");
             }
+            randomDesignindex=commonOperations.randomInt(0,(designsToPick.size()-1));
             commonOperations.waitForAnElementClickableByObject(driver, 10, designsToPick.get(randomDesignindex));
             designsToPick.get(randomDesignindex).click();
 
@@ -187,12 +223,51 @@ public class GiveGift {
         return pickedADesign;
     }
 
+    public boolean validateRecipientEmail(){
+        boolean validatedRecipientEmail = false;
+        try {
+            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("recipientEmail")));
+            WebElement recipientEmail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("recipientEmail")));
+            recipientEmail.sendKeys(wrongEmail1);
+            WebElement recipientEmailErrorMessage = driver.findElement(By.xpath(GiveGiftObjValues.getElement("recipientEmailErrorMessage")));
+            WebElement fromGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("from")));
+            fromGiftDetail.click();
+            if (recipientEmailErrorMessage.getText().contains("Please enter a valid recipient email.")) {
+                validatedRecipientEmail = true;
+                driver.navigate().refresh();
+            }
+        }catch (Exception e){
+            Logger.log("error in validating Recipient email");
+        }
+        return validatedRecipientEmail;
+    }
+
+
+    public  boolean validateGiftDetails(){
+        boolean validatedGiftDetailsInput=false;
+        boolean validatedRecipientEmail=false;
+        boolean validatedSenderEmail=true;
+
+        try {
+            validatedRecipientEmail=validateRecipientEmail();
+            Assert.assertTrue(validatedRecipientEmail);
+            if (validatedRecipientEmail && validatedSenderEmail){
+                validatedGiftDetailsInput=true;
+            }
+        }catch (Exception e){
+            Logger.log("Give a gift details Validation error");
+            e.printStackTrace();
+        }
+
+        return validatedGiftDetailsInput;
+    }
+
     public Boolean giftDetails() throws Exception {
         Boolean enteredGiftDetails = false;
-        String GiftDetailrecipientEmail="udara@calcey.com";
-        String GiftDetailSenderEmail="thevan@calcey.com";
-        String GiftDetailFrom="Theva";
-        String GiftDetailMessage="TRG Test Automation";
+        String GiftDetailrecipientEmail = "udara@calcey.com";
+        String GiftDetailSenderEmail = "thevan@calcey.com";
+        String GiftDetailFrom = "Theva";
+        String GiftDetailMessage = "TRG Test Automation";
 
         try {
             WebElement giftDetailsHeader = commonOperations.getSectionHeader();
@@ -222,10 +297,10 @@ public class GiveGift {
         }
 
         try {
-            int randomMonthIndex =2;
-            int randomDateIndex = 10;
-            int randomHourDetailInedx=3;
-            int randomMinuteIndex=5;
+            int randomMonthIndex;
+            int randomDateIndex;
+            int randomHourDetailInedx;
+            int randomMinuteIndex;
 
             WebElement calendarButtonGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarButtonGiftDetail")));
             calendarButtonGiftDetail.click();
@@ -233,28 +308,30 @@ public class GiveGift {
             if (!calendarMonthPanel.isDisplayed()) {
                 Logger.log("calendar month menu is not visible");
             }
-            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(GiveGiftObjValues.getElement("CalendarMonthsAvailabletoClick")));
-            List<WebElement> calendarMonthsAvailabletoClick = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("CalendarMonthsAvailabletoClick")));
-            if (calendarMonthsAvailabletoClick.size() != 12) {
+            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("CalendarMonthsAvailabletoClick")));
+            List<WebElement> calendarMonthsAvailabletoClick = calendarMonthPanel.findElements(By.cssSelector(GiveGiftObjValues.getElement("CalendarMonthsAvailabletoClick")));
+            if (calendarMonthsAvailabletoClick.size() < 0) {
                 Logger.log("calendar months are not available to click");
             }
+            randomMonthIndex = commonOperations.randomInt(0, (calendarMonthsAvailabletoClick.size() - 1));
             calendarMonthsAvailabletoClick.get(randomMonthIndex).click();
-            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(GiveGiftObjValues.getElement("calendarDatePanel")));
-            WebElement calendarDatePanel = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("calendarDatePanel")));
-            if (!calendarDatePanel.isDisplayed()) {
-                Logger.log("Calendar date menu is not visible");
+
+            commonOperations.waitForAnElementPresent(driver, 10, By.xpath(GiveGiftObjValues.getElement("calendarDatePanel")));
+            List<WebElement> calendarDatesAvailableToClick = driver.findElements(By.xpath(GiveGiftObjValues.getElement("calendarDatesAvailableToClick")));
+            if (calendarDatesAvailableToClick.size() < 0) {
+                Logger.log("Calendar dates are not available to click");
             }
-            List<WebElement> calendarDatesAvailableToClick = driver.findElements(By.xpath("//div[@class='moment-picker-specific-views']/table/tbody/tr/td"));
-            if (calendarDatesAvailableToClick.size() != 42) {
-                Logger.log("Calendar dates are not availale to click");
-            }
+            randomDateIndex = commonOperations.randomInt(0, (calendarDatesAvailableToClick.size() - 1));
             calendarDatesAvailableToClick.get(randomDateIndex).click();
+
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("setHourDateDetail")));
-            List<WebElement> setHourDateDetail=driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("setHourDateDetail")));
+            List<WebElement> setHourDateDetail = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("setHourDateDetail")));
+            randomHourDetailInedx = commonOperations.randomInt(0, (setHourDateDetail.size() - 1));
             setHourDateDetail.get(randomHourDetailInedx).click();
 
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("setMinuteDateDetail")));
-            List<WebElement> setMinuteDateDetail=driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("setMinuteDateDetail")));
+            List<WebElement> setMinuteDateDetail = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("setMinuteDateDetail")));
+            randomMinuteIndex = commonOperations.randomInt(0, (setMinuteDateDetail.size() - 1));
             setMinuteDateDetail.get(randomMinuteIndex).click();
 
             continueToNextStep();
@@ -318,7 +395,7 @@ public class GiveGift {
         try {
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("checkOutDetailContainer")));
             driver.switchTo().frame(driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("checkOutDetailContainer"))));
-            commonOperations.waitForAnElementPresent(driver,10, By.cssSelector(GiveGiftObjValues.getElement("creditCardNumberLabel")));
+            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("creditCardNumberLabel")));
             WebElement creditCardNumberLabel = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("creditCardNumberLabel")));
             creditCardNumberLabel.click();
             WebElement creditCardNumber = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("creditCardNumber")));
@@ -333,7 +410,7 @@ public class GiveGift {
             cvvCheckOut.sendKeys(cvvCheckOutNum);
             providedCheckOutDetails = true;
             driver.switchTo().defaultContent();
-            WebElement continueCheckOut=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("continueCheckOut")));
+            WebElement continueCheckOut = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("continueCheckOut")));
             continueCheckOut.click();
 
         } catch (Exception e) {
@@ -355,13 +432,13 @@ public class GiveGift {
         }
     }
 
-    public String getRedeemCode(){
-        String giftRedeemCode ="";
-        try{
+    public String getRedeemCode() {
+        String giftRedeemCode = "";
+        try {
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("redeemCode")));
-            WebElement redeemCode=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("redeemCode")));
-            giftRedeemCode=redeemCode.getText();
-        }catch (Exception e){
+            WebElement redeemCode = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("redeemCode")));
+            giftRedeemCode = redeemCode.getText();
+        } catch (Exception e) {
             Logger.log("cannot get the RedeemCode");
             e.printStackTrace();
         }

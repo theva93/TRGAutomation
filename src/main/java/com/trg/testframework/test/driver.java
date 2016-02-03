@@ -36,7 +36,8 @@ public class driver {
     private GiveGift giveGift = new GiveGift();
     private RedeemGift redeemGift = new RedeemGift();
     private CommonOperations commonOperations = null;
-    private String RedeemCode ="";
+    private String RedeemCode1 ="";
+    private String RedeemCode2 ="";
 
     private static String landingProperties = "";
 
@@ -106,11 +107,6 @@ public class driver {
 
     }
 
-    public void verifyHomePage() {
-
-    }
-
-
     @Test
     public void giveAGift() {
 
@@ -119,22 +115,23 @@ public class driver {
             Assert.assertTrue(homePage.verifyPageLogo());
             Assert.assertTrue(giveGift.verifyPathsToGiveAGiftPage());
             Assert.assertTrue(giveGift.goToGiveAGiftPage());
+            Assert.assertTrue(giveGift.verifyDeliveryMethodsUI());
             Assert.assertTrue(giveGift.selectDeliveryMethodEmail());
             Assert.assertTrue(giveGift.checkForOccationsAndClick());
             Assert.assertTrue(giveGift.pickADesign());
+//            Assert.assertTrue(giveGift.validateGiftDetails());
             Assert.assertTrue(giveGift.giftDetails());
             Assert.assertTrue(giveGift.giftPreview());
             Assert.assertTrue(giveGift.reviewYourOrder());
             Assert.assertTrue(giveGift.continueAsAGuest());
             Assert.assertTrue(giveGift.checkOutDetails());
-            RedeemCode = giveGift.getRedeemCode();
-            Logger.log("Coupon ID :"+ RedeemCode);
+            RedeemCode1 = giveGift.getRedeemCode();
+            Logger.log("Coupon ID :"+ RedeemCode1);
         } catch (Exception e) {
             e.printStackTrace();
             fail("couldnt finish the gifting procedure");
         }
     }
-
 
     @After
     public void redeemAGift() {
@@ -143,12 +140,11 @@ public class driver {
             Assert.assertTrue(homePage.verifyHomePageLoaded());
             Assert.assertTrue(homePage.verifyPageLogo());
             Assert.assertTrue(homePage.clickOnRedeemAGift());
-            Assert.assertTrue(redeemGift.validGiftCodeAndEnter(RedeemCode));
+            Assert.assertTrue(redeemGift.validGiftCodeAndEnter(RedeemCode1));
             //Assert.assertTrue(redeemGift.verifyRedeemAnotherCodeWithInvalidCode("2AVJ-QG3V-M2F1"));
             //Assert.assertTrue(redeemGift.invalidGiftCodeEnter("2AVJ-QG3V-M2F1"));
-            //Assert.assertTrue(redeemGift.insertEmail("udara@calcey.com"));
-            //Assert.assertTrue(redeemGift.insertAccountNo());
-            //2AVJ-QG3V-M2F1/AEBL-W4YM-BKM6/15XW-1KE8-CE58
+            Assert.assertTrue(redeemGift.insertEmail("udara@calcey.com"));
+            Assert.assertTrue(redeemGift.insertAccountNo());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,10 +152,10 @@ public class driver {
     }
 
 
-//        @After
-//        public void tearDown () {
+        @After
+        public void tearDown () {
 //             driver.quit();
-//        }
+        }
 
     }
 
