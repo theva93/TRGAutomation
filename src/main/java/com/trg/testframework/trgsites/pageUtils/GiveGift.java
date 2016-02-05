@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -23,15 +24,30 @@ public class GiveGift {
     WebElement continueToNextStep;
     WebElement homePageHeader;
     CommonOperations commonOperations = null;
-    String wrongEmail1="thevan";
-    String wrongEmail2="thevan@";
-    String wrongEmail3="thevan@calcey";
-    String wrongEmail4="thevan@calcey.";
-    String wrongEmail5="thevan@calcey.comlq";
+    HomePage homePage=null;
+    private String[] wrongEmails = new String[5];
 
-    public void receiveDriver(WebDriver driver, CommonOperations commonOperations) {
+    public void receiveDriver(WebDriver driver, CommonOperations commonOperations, HomePage homePage) {
         this.driver = driver;
         this.commonOperations = commonOperations;
+        this.homePage = homePage;
+    }
+    public boolean isGiveAGiftPageLanded (){
+        boolean landedToGiveAGiftPage=false;
+        try {
+            commonOperations.waitForAnElementPresent(driver,10,By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
+            WebElement giveGiftPage = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
+            if (giveGiftPage.isDisplayed() && giveGiftPage.getText().toLowerCase().contains("give a gift")) {
+                landedToGiveAGiftPage = true;
+            }
+
+        }catch (Exception e){
+            Logger.log("failed to land to Give A gift Page");
+            e.printStackTrace();
+        }
+
+
+        return landedToGiveAGiftPage;
     }
 
     public Boolean goToGiveAGiftPage() throws Exception {
@@ -40,12 +56,8 @@ public class GiveGift {
             commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("giveTheResposibleGift")));
             WebElement giveTheResposibleGift = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("giveTheResposibleGift")));
             giveTheResposibleGift.click();
+            landedToGiveAGiftPage=isGiveAGiftPageLanded();
 
-            WebElement giveGiftPage = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
-            if (giveGiftPage.isDisplayed() && giveGiftPage.getText().toLowerCase().contains("give a gift")) {
-                landedToGiveAGiftPage = true;
-                Logger.log("Landed to give a gift page");
-            }
         } catch (Exception e) {
             Logger.log("could not land to the give a gift page");
             e.printStackTrace();
@@ -53,48 +65,83 @@ public class GiveGift {
         return landedToGiveAGiftPage;
     }
 
-    public Boolean verifyPathsToGiveAGiftPage() throws Exception {
-
-        Boolean giveGiftPageLoaded = false;
-        try {
-            commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("giveTheResposibleGift")));
-            WebElement giveTheResposibleGift = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("giveTheResposibleGift")));
-            giveTheResposibleGift.click();
-
-            commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
-            homePageHeader = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
-            homePageHeader.click();
-
+    public boolean PathToGiveAGiftPageGiveAGift(){
+        boolean verifiedPathGiveAGift=false;
+        try{
             commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("GiveAGift")));
             WebElement GiveAGift = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("GiveAGift")));
             GiveAGift.click();
 
-            commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
-            homePageHeader = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
-            homePageHeader.click();
+            verifiedPathGiveAGift=isGiveAGiftPageLanded();
+            Assert.assertTrue(goToHomePage());
 
+        }catch (Exception e){
+            Logger.log("error in path to Give A Gift through 'Give A Gift' ");
+        }
+        return verifiedPathGiveAGift;
+    }
+    public boolean PathToGiveAGiftPageGetStartedNow(){
+        boolean verifiedPathGetStartedNow=false;
+        try{
             commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("GetStartedNow")));
             WebElement GetStartedNow = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("GetStartedNow")));
             GetStartedNow.click();
 
-            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
-            WebElement giveGiftPage = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("giveAGiftHeading")));
-            if (giveGiftPage.isDisplayed() && giveGiftPage.getText().toLowerCase().contains("give a gift")) {
-                giveGiftPageLoaded = true;
-                Logger.log("Paths to Give a Gift page is Verified ");
-            }
+            verifiedPathGetStartedNow=isGiveAGiftPageLanded();
+            Assert.assertTrue(goToHomePage());
 
-            commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
-            homePageHeader = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
-            homePageHeader.click();
+        }catch (Exception e){
+            Logger.log("error in path to Give A Gift through 'Give A Gift' ");
+        }
+        return verifiedPathGetStartedNow;
+    }
 
+    public boolean pathToGiveAGiftCreateAGiftFooter() {
+        boolean verifiedPathCreateAGiftFooter = false;
+        try {
+            commonOperations.waitForAnElementClickable(driver, 10, By.xpath(GiveGiftObjValues.getElement("createAGiftFooter")));
+            WebElement createAGiftFooter = driver.findElement(By.xpath(GiveGiftObjValues.getElement("createAGiftFooter")));
+            createAGiftFooter.click();
+
+            verifiedPathCreateAGiftFooter = isGiveAGiftPageLanded();
+            Assert.assertTrue(goToHomePage());
+
+        } catch (Exception e) {
+            Logger.log("error in path to Give A Gift through 'Create A Gift' in footer");
+        }
+        return verifiedPathCreateAGiftFooter;
+    }
+
+    public boolean pathToGiveAGiftURL(){
+        boolean verifiedPathCreateAGiftURL=false;
+        String URLGiveAGift="http://trg.calcey.net/#/gift/create";
+        try{
+            driver.navigate().to(URLGiveAGift);
+            verifiedPathCreateAGiftURL=isGiveAGiftPageLanded();
+            Assert.assertTrue(goToHomePage());
+        }catch (Exception e){
+            Logger.log("failed to land to Give A gift Page trough Direct URL");
+        }
+
+        return verifiedPathCreateAGiftURL;
+    }
+
+
+    public Boolean verifyPathsToGiveAGiftPage() throws Exception {
+        Boolean giveGiftPageLoaded = false;
+        try {
+            Assert.assertTrue(PathToGiveAGiftPageGiveAGift());
+            Assert.assertTrue(PathToGiveAGiftPageGetStartedNow());
+            Assert.assertTrue(pathToGiveAGiftCreateAGiftFooter());
+            Assert.assertTrue(pathToGiveAGiftURL());
+            giveGiftPageLoaded=true;
         } catch (Exception e) {
             Logger.log("cannot verify the paths to the Give a gift page");
             e.printStackTrace();
         }
-
         return giveGiftPageLoaded;
     }
+
     public Boolean verifyDeliveryMethodsUI(){
         Boolean verifiedDeliveryMethodsUI = false;
         try{
@@ -114,6 +161,7 @@ public class GiveGift {
                     Logger.log("Missing Compare details for delivery methods");
                 }
             }
+            commonOperations.waitForAnElementPresent(driver, 5, By.cssSelector(GiveGiftObjValues.getElement("getStartedNowDeliveryMethods")));
             WebElement getStartedNowDeliveryMethods=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("getStartedNowDeliveryMethods")));
             getStartedNowDeliveryMethods.click();
             verifiedDeliveryMethodsUI=true;
@@ -125,7 +173,7 @@ public class GiveGift {
         return verifiedDeliveryMethodsUI;
     }
 
-    public Boolean selectDeliveryMethodEmail() throws Exception {
+    public Boolean  selectDeliveryMethodEmail() throws Exception {
 
         Boolean selectedDeliveryByEmail = false;
         try {
@@ -134,7 +182,7 @@ public class GiveGift {
             deliveryOptions.click();
 
             continueToNextStep();
-            WebElement OccasionsHeading = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("OccasionsHeading")));
+            WebElement OccasionsHeading = commonOperations.getSectionHeader();
             if (OccasionsHeading.getText().toLowerCase().contains("choose the occasion")) {
                 selectedDeliveryByEmail = true;
             }
@@ -145,7 +193,7 @@ public class GiveGift {
         return selectedDeliveryByEmail;
     }
 
-    public Boolean selectDeliveryMethodprintAtHome() {
+    public Boolean selectDeliveryMethodPrintAtHome() {
 
         Boolean selectedPrintAtHome = false;
         try {
@@ -168,7 +216,7 @@ public class GiveGift {
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("selectOccations")));
             List<WebElement> selectOccations = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("selectOccations")));
             if (selectOccations.size()<=0) {
-                Logger.log("Occations are not available to click");
+                Logger.log("Occasions are not available to click");
             }
             randomChoiceOccasion=commonOperations.randomInt(0,(selectOccations.size()-1));
             WebElement selectOneOccation = selectOccations.get(randomChoiceOccasion).findElement(By.tagName("a"));
@@ -180,7 +228,6 @@ public class GiveGift {
             Logger.log("cannot check for the occations and click one");
             e.printStackTrace();
         }
-
         return selectedOneOccation;
     }
 
@@ -200,8 +247,8 @@ public class GiveGift {
             commonOperations.waitForAnElementPresent(driver, 10, By.xpath(GiveGiftObjValues.getElement("imagesToPickDesign")));
             List<WebElement> designsToPick = driver.findElements(By.xpath(GiveGiftObjValues.getElement("imagesToPickDesign")));
 
-            if (designsToPick.size() > 0) {
-                Logger.log("Thumbnails to select designs are available");
+            if (designsToPick.size() == 0) {
+                Logger.log("Thumbnails are not available to select designs ");
             }
             randomDesignindex=commonOperations.randomInt(0,(designsToPick.size()-1));
             commonOperations.waitForAnElementClickableByObject(driver, 10, designsToPick.get(randomDesignindex));
@@ -214,7 +261,6 @@ public class GiveGift {
                     break;
                 }
             }
-            System.out.println("Design is picked");
             pickedADesign = true;
         } catch (Exception e) {
             Logger.log("cannot pick A design for the card from the given");
@@ -223,37 +269,87 @@ public class GiveGift {
         return pickedADesign;
     }
 
-    public boolean validateRecipientEmail(){
-        boolean validatedRecipientEmail = false;
+    public boolean validateSenderEmail(){
+        boolean validatedSenderEmail = false;
         try {
-            commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("recipientEmail")));
-            WebElement recipientEmail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("recipientEmail")));
-            recipientEmail.sendKeys(wrongEmail1);
-            WebElement recipientEmailErrorMessage = driver.findElement(By.xpath(GiveGiftObjValues.getElement("recipientEmailErrorMessage")));
-            WebElement fromGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("from")));
-            fromGiftDetail.click();
-            if (recipientEmailErrorMessage.getText().contains("Please enter a valid recipient email.")) {
-                validatedRecipientEmail = true;
-                driver.navigate().refresh();
+            for(int i=0; i< Array.getLength(wrongEmails);i++) {
+                validatedSenderEmail=false;
+                commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("senderEmail")));
+                WebElement senderEmail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("senderEmail")));
+                senderEmail.sendKeys(wrongEmails[i]);
+                WebElement fromGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("from")));
+                fromGiftDetail.click();
+
+                WebElement senderEmailErrorMessage= driver.findElement(By.xpath(GiveGiftObjValues.getElement("senderEmailErrorMessage")));
+                if ((senderEmailErrorMessage.getText().contains("Please enter a valid sender email."))) {
+                    validatedSenderEmail = true;
+                    driver.navigate().refresh();
+                }
             }
         }catch (Exception e){
+            Logger.log("error in validating Recipient email");
+        }
+
+        return validatedSenderEmail;
+    }
+
+    public boolean validateRecipientEmail() {
+        boolean validatedRecipientEmail = false;
+        try {
+            for (int i = 0; i < Array.getLength(wrongEmails); i++) {
+                validatedRecipientEmail = false;
+                commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("recipientEmail")));
+                WebElement recipientEmail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("recipientEmail")));
+                recipientEmail.sendKeys(wrongEmails[i]);
+
+                WebElement fromGiftDetail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("from")));
+                fromGiftDetail.click();
+                WebElement recipientEmailErrorMessage = driver.findElement(By.xpath(GiveGiftObjValues.getElement("recipientEmailErrorMessage")));
+                if (recipientEmailErrorMessage.getText().contains("Please enter a valid recipient email.")) {
+                    validatedRecipientEmail = true;
+                    driver.navigate().refresh();
+                }
+            }
+        } catch (Exception e) {
             Logger.log("error in validating Recipient email");
         }
         return validatedRecipientEmail;
     }
 
+    public boolean validateGiftAmountSelections(){
+        boolean validatedSelectionsForAmount=false;
+        List<WebElement> radioButtonSelections=driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("radioAmounts")));
+        for(int i=0; i<(radioButtonSelections.size());i++){
+            Logger.log(radioButtonSelections.get(i).findElement(By.tagName("span")).getText());
+        }
+        radioButtonSelections.get(2).click();
+        WebElement otherAmountTextField=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("otherAmountTextField")));
+        otherAmountTextField.getText();
+        String checking1 =radioButtonSelections.get(2).findElement(By.tagName("input")).getAttribute("checked");
+        String checking =radioButtonSelections.get(1).findElement(By.tagName("input")).getAttribute("checked");
+
+
+        validatedSelectionsForAmount=true;
+
+
+
+        return validatedSelectionsForAmount;
+    }
+
 
     public  boolean validateGiftDetails(){
         boolean validatedGiftDetailsInput=false;
-        boolean validatedRecipientEmail=false;
-        boolean validatedSenderEmail=true;
+        wrongEmails[0] = "thevan";
+        wrongEmails[1] = "thevan@";
+        wrongEmails[2] = "thevan@calcey";
+        wrongEmails[3] = "thevan@calcey.";
+        wrongEmails[4] = "thevan@calcey.comlq";
 
         try {
-            validatedRecipientEmail=validateRecipientEmail();
-            Assert.assertTrue(validatedRecipientEmail);
-            if (validatedRecipientEmail && validatedSenderEmail){
-                validatedGiftDetailsInput=true;
-            }
+            Assert.assertTrue(validateGiftAmountSelections());
+            Assert.assertTrue(validateRecipientEmail());
+            Assert.assertTrue(validateSenderEmail());
+            validatedGiftDetailsInput=true;
         }catch (Exception e){
             Logger.log("Give a gift details Validation error");
             e.printStackTrace();
@@ -271,12 +367,10 @@ public class GiveGift {
 
         try {
             WebElement giftDetailsHeader = commonOperations.getSectionHeader();
-            if (giftDetailsHeader.getText().toLowerCase().contains("gift details: select an amount")) {
-                System.out.println("The Gift details page is available");
+            if (!giftDetailsHeader.getText().toLowerCase().contains("gift details: select an amount")) {
+               Logger.log("The Gift details page is Not available");
             }
-
             commonOperations.waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("radioAmounts")));
-
             List<WebElement> radioAmounts = driver.findElements(By.cssSelector(GiveGiftObjValues.getElement("radioAmounts")));
             radioAmounts.get(2).click();
             WebElement recipientEmail = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("recipientEmail")));
@@ -443,6 +537,22 @@ public class GiveGift {
             e.printStackTrace();
         }
         return giftRedeemCode;
+    }
+    public Boolean goToHomePage(){
+        Boolean landedHomePage=false;
+        try {
+            commonOperations.waitForAnElementClickable(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
+            homePageHeader = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("homePageHeader")));
+            homePageHeader.click();
+
+            if(homePage.verifyHomePageLoaded()){
+                landedHomePage=true;
+            }
+        }catch (Exception e){
+            Logger.log("failed to land home page");
+            e.printStackTrace();
+        }
+        return  landedHomePage;
     }
 
 }

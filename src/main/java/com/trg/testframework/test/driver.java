@@ -102,7 +102,7 @@ public class driver {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         commonOperations = new CommonOperations(driver,homePage);
         homePage.recieveDriver(driver, commonOperations);
-        giveGift.receiveDriver(driver, commonOperations);
+        giveGift.receiveDriver(driver, commonOperations,homePage);
         redeemGift.recieveDriver(driver, commonOperations);
 
     }
@@ -119,7 +119,7 @@ public class driver {
             Assert.assertTrue(giveGift.selectDeliveryMethodEmail());
             Assert.assertTrue(giveGift.checkForOccationsAndClick());
             Assert.assertTrue(giveGift.pickADesign());
-//            Assert.assertTrue(giveGift.validateGiftDetails());
+            Assert.assertTrue(giveGift.validateGiftDetails());
             Assert.assertTrue(giveGift.giftDetails());
             Assert.assertTrue(giveGift.giftPreview());
             Assert.assertTrue(giveGift.reviewYourOrder());
@@ -133,23 +133,23 @@ public class driver {
         }
     }
 
-    @After
-    public void redeemAGift() {
-        try {
-            Assert.assertTrue(commonOperations.goToHomePage());
-            Assert.assertTrue(homePage.verifyHomePageLoaded());
-            Assert.assertTrue(homePage.verifyPageLogo());
-            Assert.assertTrue(homePage.clickOnRedeemAGift());
-            Assert.assertTrue(redeemGift.validGiftCodeAndEnter(RedeemCode1));
-            //Assert.assertTrue(redeemGift.verifyRedeemAnotherCodeWithInvalidCode("2AVJ-QG3V-M2F1"));
-            //Assert.assertTrue(redeemGift.invalidGiftCodeEnter("2AVJ-QG3V-M2F1"));
-            Assert.assertTrue(redeemGift.insertEmail("udara@calcey.com"));
-            Assert.assertTrue(redeemGift.insertAccountNo());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @After
+//    public void redeemAGift() {
+//        try {
+//            Assert.assertTrue(commonOperations.goToHomePage());
+//            Assert.assertTrue(homePage.verifyHomePageLoaded());
+//            Assert.assertTrue(homePage.verifyPageLogo());
+//            Assert.assertTrue(homePage.clickOnRedeemAGift());
+//            Assert.assertTrue(redeemGift.validGiftCodeAndEnter(RedeemCode1));
+//            //Assert.assertTrue(redeemGift.verifyRedeemAnotherCodeWithInvalidCode("2AVJ-QG3V-M2F1"));
+//            //Assert.assertTrue(redeemGift.invalidGiftCodeEnter("2AVJ-QG3V-M2F1"));
+//            Assert.assertTrue(redeemGift.insertEmail("udara@calcey.com"));
+//            Assert.assertTrue(redeemGift.insertAccountNo());
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
         @After

@@ -26,8 +26,8 @@ public class HomePage {
             WebElement headerElement = driver.findElement(By.cssSelector(LandingObjValues.getElement("homePageButton")));
             pageLogoVerified = headerElement.isDisplayed();
         } catch (Exception e) {
-            e.printStackTrace();
             Logger.log("failed to verify Page Logo");
+            e.printStackTrace();
         }
         return pageLogoVerified;
     }
@@ -46,8 +46,8 @@ public class HomePage {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             Logger.log("failed to navigate to Home page");
+            e.printStackTrace();
         }
         return homePageLoaded;
     }

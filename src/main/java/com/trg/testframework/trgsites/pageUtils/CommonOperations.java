@@ -117,15 +117,21 @@ public class CommonOperations {
     }
 
     public WebElement getSectionHeader(){
-        WebElement sectionHeader=driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("sectionHeader")));
-        return  sectionHeader;
+        WebElement sectionHeader=null;
+        try {
+            waitForAnElementPresent(driver, 10, By.cssSelector(GiveGiftObjValues.getElement("sectionHeader")));
+            sectionHeader = driver.findElement(By.cssSelector(GiveGiftObjValues.getElement("sectionHeader")));
+        }catch (Exception e){
+            Logger.log("failed to get section Header");
+        }
+        return sectionHeader;
     }
 
     public Boolean goToHomePage(){
         Boolean landedHomePage=false;
         try {
-            waitForAnElementClickable(driver, 10, By.cssSelector(LandingObjValues.getElement("logoImage")));
-            WebElement homeButton=driver.findElement(By.cssSelector(LandingObjValues.getElement("logoImage")));
+            waitForAnElementClickable(driver, 10, By.cssSelector(LandingObjValues.getElement("homePageButton")));
+            WebElement homeButton=driver.findElement(By.cssSelector(LandingObjValues.getElement("homePageButton")));
             homeButton.click();
             if(homePage.verifyHomePageLoaded()){
                 landedHomePage=true;
@@ -136,6 +142,7 @@ public class CommonOperations {
         }
         return  landedHomePage;
     }
+
     public int randomInt(int min, int max) {
         if(min > max) {
             int rand = min;
